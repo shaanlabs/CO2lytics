@@ -1,0 +1,154 @@
+---
+title: "🌍 The Carbon Cost of Intelligence — AI's Hidden Energy Footprint"
+author: "AI Environmental Impact Research Team"
+date: "October 29, 2025"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    highlight: tango
+    code_folding: hide
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+    echo = TRUE,
+    message = FALSE,
+    warning = FALSE,
+    fig.width = 10,
+    fig.height = 6,
+    dpi = 300
+)
+```
+
+# Executive Summary
+
+This analysis investigates the environmental impact of training large AI models from 2017 to 2025. We examine carbon emissions, energy consumption patterns, and the relationship between model size and environmental costs. Our findings reveal significant trends in the AI industry's environmental footprint and identify opportunities for more sustainable AI development.
+
+# Introduction
+
+## Background
+The rapid advancement of artificial intelligence has led to increasingly large and complex models. While these models have achieved remarkable capabilities, their environmental impact has become a growing concern. This report quantifies and analyzes the environmental costs of training major AI models.
+
+## Objectives
+- Quantify the carbon footprint of major AI models
+- Analyze the relationship between model size and energy consumption
+- Identify trends in AI training efficiency over time
+- Compare environmental impact across different organizations
+
+```{r load-packages-and-data}
+# Load required packages and functions
+source("R/packages.R")
+source("R/data_preparation.R")
+source("R/visualization.R")
+
+# Load and prepare data
+data <- create_ai_dataset()
+
+# Calculate summary statistics
+summary_stats <- data %>%
+    summarise(
+        Total_Models = n(),
+        Total_CO2 = sum(CO2_Tons),
+        Avg_CO2_per_Model = mean(CO2_Tons),
+        Total_Energy = sum(EnergyUsed_MWh),
+        Avg_Energy_per_Model = mean(EnergyUsed_MWh)
+    )
+```
+
+# Analysis Results
+
+## Carbon Footprint Overview
+
+### Total Environmental Impact
+As of 2025, the cumulative impact of AI model training:
+
+- Total CO₂ Emissions: `r format(summary_stats$Total_CO2, big.mark=",")` tons
+- Total Energy Consumed: `r format(summary_stats$Total_Energy, big.mark=",")` MWh
+- Average CO₂ per Model: `r format(round(summary_stats$Avg_CO2_per_Model), big.mark=",")` tons
+
+### Carbon Emissions by Model
+```{r carbon-footprint}
+create_carbon_footprint_plot(data)
+```
+
+## Energy Consumption Analysis
+
+### Model Size vs Energy Usage
+```{r model-size-energy}
+p2 <- create_model_size_energy_plot(data)
+p2
+```
+
+### Emissions Trend
+```{r emissions-trend}
+create_emissions_trend_plot(data)
+```
+
+## Efficiency Analysis
+
+### Training Efficiency Over Time
+```{r efficiency-analysis}
+create_efficiency_plot(data)
+```
+
+## Organization Analysis
+```{r org-analysis}
+org_summary <- data %>%
+    group_by(Organization) %>%
+    summarise(
+        Models_Count = n(),
+        Total_CO2 = sum(CO2_Tons),
+        Avg_CO2_per_Model = mean(CO2_Tons),
+        Total_Energy = sum(EnergyUsed_MWh)
+    ) %>%
+    arrange(desc(Total_CO2))
+
+knitr::kable(org_summary, 
+             caption = "Environmental Impact by Organization",
+             format.args = list(big.mark = ","))
+```
+
+# Key Findings
+
+1. **Exponential Growth**: The carbon footprint of AI training has grown exponentially, with the largest models in 2025 producing over `r format(max(data$CO2_Tons), big.mark=",")` tons of CO₂.
+
+2. **Size-Energy Relationship**: There is a strong correlation between model size and energy consumption, though some organizations achieve better efficiency than others.
+
+3. **Organizational Differences**: Different organizations show varying levels of energy efficiency in their training processes, with some achieving lower emissions per parameter.
+
+4. **Temporal Trends**: The environmental impact of AI training has increased year over year, though some recent models show improved efficiency.
+
+# Recommendations
+
+1. **Efficiency Standards**: Establish industry-wide standards for energy-efficient AI training.
+
+2. **Green Computing**: Invest in renewable energy sources for AI training infrastructure.
+
+3. **Optimization Focus**: Prioritize model efficiency alongside performance metrics.
+
+4. **Transparency**: Implement mandatory environmental impact reporting for large AI models.
+
+# Methodology Notes
+
+## Data Collection
+The dataset includes `r nrow(data)` AI models from `r length(unique(data$Organization))` organizations, spanning from 2017 to 2025. Carbon emissions are estimated based on energy consumption and local power grid emissions factors.
+
+## Limitations
+- Estimates for future models (2025) are projections
+- Energy consumption data may vary based on specific training conditions
+- Carbon intensity varies by location and power source
+
+# Appendix
+
+## Technical Details
+```{r technical-appendix}
+summary(data)
+```
+
+## Session Information
+```{r session-info}
+sessionInfo()
+```
