@@ -60,10 +60,9 @@ data_updated_on <- function() {
 }
 
 # ---- UI ----
-ui <- dashboardPage(
-  skin = "black",
-  dashboardHeader(title = span(icon("leaf"), "CO2lytics: AI Energy & Carbon Intelligence (2017–2025)")),
-  dashboardSidebar(
+ui <- shinydashboardPlus::dashboardPage(
+  header = dashboardHeader(title = span(icon("leaf"), "CO2lytics: AI Energy & Carbon Intelligence (2017–2025)")),
+  sidebar = dashboardSidebar(
     sidebarMenu(
       menuItem("Overview", tabName = "overview", icon = icon("house")),
       menuItem("Carbon Emission Trend", tabName = "emissions", icon = icon("chart-line")),
@@ -76,7 +75,7 @@ ui <- dashboardPage(
     hr(),
     div(class = "footer-note", paste("Built in R Shiny (Windsurf)"))
   ),
-  dashboardBody(
+  body = dashboardBody(
     theme = bs_theme(version = 5, bootswatch = "flatly", base_font = font_google("Inter")),
     tags$link(rel = "stylesheet", type = "text/css", href = "style.css"),
     tabItems(
@@ -88,89 +87,89 @@ ui <- dashboardPage(
           valueBoxOutput("vb_largest", width = 3)
         ),
         fluidRow(
-          boxPlus(width = 12, title = "About", status = "primary", solidHeader = TRUE,
+          box(width = 12, title = "About", status = "primary", solidHeader = TRUE,
               p("This dashboard analyzes AI model energy usage and carbon emissions from 2017 to 2025."),
               p("Use filters to explore by year and organization. Charts are interactive and exportable."),
               p("Credits: Dataset within this project; organizations include OpenAI, Google DeepMind, Meta, NVIDIA, etc."))
         ),
         fluidRow(
-          boxPlus(width = 12, title = "Model Releases Timeline", status = "primary", solidHeader = TRUE,
+          box(width = 12, title = "Model Releases Timeline", status = "primary", solidHeader = TRUE,
               plotlyOutput("timeline_bar", height = 280))
         )
       ),
       tabItem(tabName = "emissions",
         fluidRow(
-          boxPlus(width = 12, title = tagList(icon("chart-line"), "Growth of AI Carbon Emissions (2017–2025)"), status = "primary", solidHeader = TRUE,
+          box(width = 12, title = tagList(icon("chart-line"), "Growth of AI Carbon Emissions (2017–2025)"), status = "primary", solidHeader = TRUE,
               plotlyOutput("emissions_plot", height = 480),
               plotlyOutput("emissions_anim", height = 420),
               downloadButton("dl_emissions_png", "Download PNG")),
-          boxPlus(width = 12, title = "Insights", status = "info",
+          box(width = 12, title = "Insights", status = "info",
               textOutput("ins_emissions"))
         )
       ),
       tabItem(tabName = "efficiency",
         fluidRow(
-          boxPlus(width = 12, title = tagList(icon("bullseye"), "AI Model Training Efficiency Over Time"), status = "primary", solidHeader = TRUE,
+          box(width = 12, title = tagList(icon("bullseye"), "AI Model Training Efficiency Over Time"), status = "primary", solidHeader = TRUE,
               plotlyOutput("efficiency_plot", height = 480),
               downloadButton("dl_efficiency_png", "Download PNG")),
-          boxPlus(width = 12, title = "Insights", status = "info",
+          box(width = 12, title = "Insights", status = "info",
               textOutput("ins_efficiency"))
         )
       ),
       tabItem(tabName = "size_energy",
         fluidRow(
-          boxPlus(width = 12, title = tagList(icon("circle"), "AI Model Size vs Energy Used"), status = "primary", solidHeader = TRUE,
+          box(width = 12, title = tagList(icon("circle"), "AI Model Size vs Energy Used"), status = "primary", solidHeader = TRUE,
               plotlyOutput("size_energy_plot", height = 500),
               downloadButton("dl_size_png", "Download PNG")),
-          boxPlus(width = 12, title = "Insights", status = "info",
+          box(width = 12, title = "Insights", status = "info",
               textOutput("ins_size"))
         )
       ),
       tabItem(tabName = "org",
         fluidRow(
-          boxPlus(width = 12, title = "Total Emissions by Organization", status = "primary", solidHeader = TRUE,
+          box(width = 12, title = "Total Emissions by Organization", status = "primary", solidHeader = TRUE,
               plotlyOutput("org_bar", height = 460),
               downloadButton("dl_org_png", "Download PNG"))
         ),
         fluidRow(
-          boxPlus(width = 6, title = "Efficiency by Organization (Box)", status = "primary", solidHeader = TRUE,
+          box(width = 6, title = "Efficiency by Organization (Box)", status = "primary", solidHeader = TRUE,
               plotlyOutput("eff_by_org", height = 360)),
-          boxPlus(width = 6, title = "Top 5 Most Carbon-Intensive Labs", status = "warning", solidHeader = TRUE,
+          box(width = 6, title = "Top 5 Most Carbon-Intensive Labs", status = "warning", solidHeader = TRUE,
               reactable::reactableOutput("top5_table"))
         )
       ),
       tabItem(tabName = "dist",
         fluidRow(
-          boxPlus(width = 6, title = "CO₂ Emissions Distribution", status = "primary", solidHeader = TRUE,
+          box(width = 6, title = "CO₂ Emissions Distribution", status = "primary", solidHeader = TRUE,
               plotlyOutput("hist_co2", height = 360)),
-          boxPlus(width = 6, title = "Energy Used by Organization (Boxplot)", status = "primary", solidHeader = TRUE,
+          box(width = 6, title = "Energy Used by Organization (Boxplot)", status = "primary", solidHeader = TRUE,
               plotlyOutput("box_energy", height = 360))
         ),
         fluidRow(
-          boxPlus(width = 6, title = "Proportion of Total Emissions by Organization", status = "primary", solidHeader = TRUE,
+          box(width = 6, title = "Proportion of Total Emissions by Organization", status = "primary", solidHeader = TRUE,
               plotlyOutput("pie_org", height = 360)),
-          boxPlus(width = 6, title = "Correlation: Size, Energy, CO₂", status = "primary", solidHeader = TRUE,
+          box(width = 6, title = "Correlation: Size, Energy, CO₂", status = "primary", solidHeader = TRUE,
               plotOutput("corr_plot", height = 360))
         )
       ),
       tabItem(tabName = "explorer",
         fluidRow(
-          boxPlus(width = 12, title = "Dataset Explorer", status = "primary", solidHeader = TRUE,
+          box(width = 12, title = "Dataset Explorer", status = "primary", solidHeader = TRUE,
               reactable::reactableOutput("table"),
               br(),
               downloadButton("download_csv", "Download Filtered CSV"))
         )
       )
     )
-  )
-  , rightsidebar = rightSidebar(
+  ),
+  controlbar = shinydashboardPlus::dashboardControlbar(
       h4("Global Filters"),
       uiOutput("year_range_ui"),
       uiOutput("org_select_ui"),
       checkboxInput("show_labels", "Show model labels", value = TRUE),
-      div(class = "footer-note", textOutput("data_updated")),
-      width = 250
-    )
+      div(class = "footer-note", textOutput("data_updated"))
+    ),
+  skin = "black"
 )
 
 # ---- Server ----
@@ -271,7 +270,7 @@ server <- function(input, output, session) {
       geom_col(show.legend = FALSE) + coord_flip() +
       labs(x = "Organization", y = "Total CO₂ (tons)", title = "Total Emissions by Organization") +
       theme_minimal(base_family = "Inter") + theme(plot.title = element_text(face = "bold", size = 16))
-    ggplotly(p)
+    ggplotly(p) %>% add_plotly_config()
   })
 
   # Distributions
@@ -283,12 +282,20 @@ server <- function(input, output, session) {
   output$box_energy <- renderPlotly({
     p <- ggplot(filtered(), aes(x = Organization, y = EnergyUsed_MWh, fill = Organization)) +
       geom_boxplot(outlier.alpha = 0.4) + coord_flip() + labs(x = "Organization", y = "Energy (MWh)") + theme_minimal(base_family = "Inter")
-    ggplotly(p)
+    ggplotly(p) %>% add_plotly_config()
   })
   output$pie_org <- renderPlotly({
     df <- filtered() %>% group_by(Organization) %>% summarise(Total_CO2 = sum(CO2_Tons), .groups = "drop")
     plot_ly(df, labels = ~Organization, values = ~Total_CO2, type = 'pie', textinfo = 'label+percent', insidetextorientation = 'radial') %>%
       layout(title = 'Emissions Share by Organization')
+  })
+
+  # Timeline bar on overview: count models per year
+  output$timeline_bar <- renderPlotly({
+    df <- filtered() %>% group_by(Year) %>% summarise(Models = n(), .groups = 'drop')
+    p <- ggplot(df, aes(x = Year, y = Models)) + geom_col(fill = '#17a2b8') +
+      labs(title = 'Model Releases Timeline', x = 'Year', y = 'Models') + theme_minimal(base_family = 'Inter')
+    ggplotly(p) %>% add_plotly_config()
   })
 
   # Correlation plot (static ggplot image for reliability)
