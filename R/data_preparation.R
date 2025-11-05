@@ -37,6 +37,9 @@ create_ai_dataset <- function() {
         )
     )
     
+    # Remove duplicate rows if any
+    data <- dplyr::distinct(data)
+    
     # Add derived metrics
     data$Energy_Efficiency <- round(data$Parameters_Billion / data$EnergyUsed_MWh, 4)
     data$CO2_per_Parameter <- round(data$CO2_Tons / data$Parameters_Billion, 2)
@@ -44,11 +47,9 @@ create_ai_dataset <- function() {
     # Validate data
     validate_dataset(data)
     
-    # Save dataset with timestamp
-    filename <- file.path("data", paste0(
-        "ai_carbon_footprint_", format(Sys.Date(), "%Y%m%d"), ".csv"
-    ))
-    write.csv(data, filename, row.names = FALSE)
+    # Save a canonical dataset (overwrite to avoid duplicates)
+    filename <- file.path("data", "ai_carbon_footprint.csv")
+    utils::write.csv(data, filename, row.names = FALSE)
     
     message("Dataset created and saved successfully to: ", filename)
     return(data)

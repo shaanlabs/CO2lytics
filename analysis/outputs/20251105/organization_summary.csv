@@ -1,0 +1,12 @@
+"Organization","Models_Count","Total_CO2","Avg_CO2_per_Model","Total_Energy"
+"OpenAI",5,13306,2661.2,12001200
+"Google DeepMind",3,10450,3483.33333333333,14700000
+"Meta",3,9720,3240,3560000
+"Anthropic",2,4550,2275,6e+06
+"Google",4,2985,746.25,4609800
+"DeepMind",2,1230,615,2900000
+"AI21 Labs",1,600,600,1200000
+"TII UAE",1,510,510,1100000
+"NVIDIA",1,500,500,5800
+"BigScience",1,433,433,1082000
+"University of Toronto",1,5,5,50

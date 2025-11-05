@@ -1,0 +1,16 @@
+
+Analysis started at 2025-11-05 18:37:44.240744
+
+Creating dataset...
+
+Summary Statistics:
+  Total_Models Total_CO2 Avg_CO2_per_Model Total_Energy Avg_Energy_per_Model
+1           24     44289          1845.375     47158850              1964952
+  Total_Parameters Latest_Year
+1          12277.2        2025
+
+Generating visualizations...
+
+Error occurred: Saving a widget with selfcontained = TRUE requires pandoc. See here to learn more https://bookdown.org/yihui/rmarkdown-cookbook/install-pandoc.html
+
+Analysis finished at 2025-11-05 18:37:46.989082

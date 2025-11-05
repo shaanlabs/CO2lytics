@@ -12,6 +12,7 @@ setup_packages <- function(pkg_list = c(
     "ggthemes",   # For additional plotting themes
     "ggrepel",    # For non-overlapping text labels
     "plotly",     # For interactive visualizations
+    "htmlwidgets",# For saving interactive html widgets
     "tidyr",      # For data tidying
     "knitr",      # For report generation
     "rmarkdown",  # For R Markdown processing
@@ -25,6 +26,12 @@ setup_packages <- function(pkg_list = c(
     # Ensure a CRAN repo is set
     if (is.null(repos) || length(repos) == 0 || identical(repos[["CRAN"]], "@CRAN@") || anyNA(repos)) {
         options(repos = c(CRAN = "https://cloud.r-project.org"))
+    }
+    
+    # On Windows, prefer binary packages to avoid needing build tools
+    if (tolower(.Platform$OS.type) == "windows") {
+        options(pkgType = "binary")
+        Sys.setenv(R_COMPILE_AND_INSTALL_PACKAGES = "never")
     }
 
     # Check for missing packages
@@ -40,8 +47,21 @@ setup_packages <- function(pkg_list = c(
                 dependencies = TRUE,
                 quiet = TRUE,
                 Ncpus = max(1L, as.integer(tryCatch(parallel::detectCores(), error = function(e) 1L)) - 1L),
-                repos = getOption("repos")
+                repos = getOption("repos"),
+                type = getOption("pkgType", default = "binary")
             )
+            # Verify after bulk install; retry any that still failed one-by-one as binary
+            still_missing <- setdiff(new_packages, rownames(installed.packages()))
+            if (length(still_missing) > 0) {
+                message("Retrying binary install for: ", paste(still_missing, collapse = ", "))
+                for (pkg in still_missing) {
+                    tryCatch({
+                        install.packages(pkg, dependencies = TRUE, quiet = TRUE, repos = getOption("repos"), type = "binary")
+                    }, error = function(e) {
+                        stop(paste0("Package installation failed for '", pkg, "': ", conditionMessage(e)))
+                    })
+                }
+            }
         }, error = function(e) {
             stop(paste0("Package installation failed: ", conditionMessage(e)))
         })

@@ -12,6 +12,7 @@ cat(sprintf("\nAnalysis started at %s\n", Sys.time()), file = log_file)
 tryCatch({
     # Source required files
     source("R/packages.R")
+    setup_packages()
     source("R/data_preparation.R")
     source("R/visualization.R")
     
@@ -48,7 +49,11 @@ tryCatch({
     
     # Model Size vs Energy Plot
     p2 <- create_model_size_energy_plot(data)
-    htmlwidgets::saveWidget(p2, file.path(viz_dir, "model_size_energy.html"))
+    htmlwidgets::saveWidget(
+        widget = p2,
+        file = file.path(viz_dir, "model_size_energy.html"),
+        selfcontained = FALSE
+    )
     
     # Emissions Trend Plot
     p3 <- create_emissions_trend_plot(data)
